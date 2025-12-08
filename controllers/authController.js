@@ -53,8 +53,8 @@ const login = async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     console.error('Error stack:', error.stack);
-    // TEMPORARY DEBUGGING: Always show error details
-    res.status(500).json({ error: 'Login failed', details: error.message, stack: error.stack });
+    // Return generic error in production, details in development
+    res.status(500).json({ error: 'Login failed', details: process.env.NODE_ENV === 'development' ? error.message : undefined });
   }
 };
 
