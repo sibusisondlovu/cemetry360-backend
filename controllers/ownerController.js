@@ -41,7 +41,19 @@ const getOwnerById = async (req, res) => {
 
 const createOwner = async (req, res) => {
   try {
-    const owner = await Owner.create(req.body);
+    const ownerData = {
+      name: req.body.name,
+      idNumber: req.body.idNumber,
+      contactAddress: req.body.contactAddress,
+      phone: req.body.phone,
+      email: req.body.email,
+      ownershipType: req.body.ownershipType,
+      nextOfKin: req.body.nextOfKin,
+      nextOfKinContact: req.body.nextOfKinContact,
+      alternateContact: req.body.alternateContact,
+      notes: req.body.notes,
+    };
+    const owner = await Owner.create(ownerData);
     res.status(201).json(owner);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -50,9 +62,22 @@ const createOwner = async (req, res) => {
 
 const updateOwner = async (req, res) => {
   try {
+    const ownerData = {
+      name: req.body.name,
+      idNumber: req.body.idNumber,
+      contactAddress: req.body.contactAddress,
+      phone: req.body.phone,
+      email: req.body.email,
+      ownershipType: req.body.ownershipType,
+      nextOfKin: req.body.nextOfKin,
+      nextOfKinContact: req.body.nextOfKinContact,
+      alternateContact: req.body.alternateContact,
+      notes: req.body.notes,
+    };
+
     const owner = await Owner.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      ownerData,
       { new: true, runValidators: true }
     );
     if (!owner) {
@@ -68,8 +93,8 @@ const createOwnership = async (req, res) => {
   try {
     const { ownerId, plotId, rightIssueDate, validityPeriod, validityUnit } = req.body;
 
-    const expiryDate = validityUnit === 'Perpetual' 
-      ? null 
+    const expiryDate = validityUnit === 'Perpetual'
+      ? null
       : new Date(new Date(rightIssueDate).setFullYear(new Date(rightIssueDate).getFullYear() + validityPeriod));
 
     const ownership = await Ownership.create({

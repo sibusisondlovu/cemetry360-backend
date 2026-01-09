@@ -13,12 +13,14 @@ const Owner = require('../models/Owner');
 const Ownership = require('../models/Ownership');
 const Booking = require('../models/Booking');
 const Tariff = require('../models/Tariff');
+const Role = require('../models/Role');
+const User = require('../models/User');
 
 const connectDB = async () => {
   try {
     const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cemetery_management';
     await mongoose.connect(mongoURI);
-    console.log('✓ MongoDB connected for seeding (Ekurhuleni)');
+    console.log('✓ MongoDB connected for seeding');
     return true;
   } catch (error) {
     console.error('✗ MongoDB connection error:', error.message);
@@ -26,14 +28,14 @@ const connectDB = async () => {
   }
 };
 
-const seedEkurhuleni = async () => {
+const seedMusina = async () => {
   try {
     const connected = await connectDB();
     if (!connected) {
       process.exit(1);
     }
 
-    console.log('\n=== Seeding Ekurhuleni Municipality Data ===\n');
+    console.log('\n=== Seeding Musina Municipality Data ===\n');
 
     // Clear existing data
     console.log('Clearing existing data...');
@@ -49,76 +51,90 @@ const seedEkurhuleni = async () => {
     await Tariff.deleteMany({});
     console.log('✓ Existing data cleared\n');
 
-    // Ekurhuleni Municipality Cemeteries
+    // Musina Municipality Cemeteries
     const cemeteriesData = [
       {
-        name: 'Thomas Titus Nkobi Memorial Park',
-        code: 'TTN',
-        address: 'Barry Marais Rd, Vosloorus, Boksburg, 1475',
-        gpsLatitude: -26.2580,
-        gpsLongitude: 28.2320,
+        name: 'Musina Main Cemetery',
+        code: 'MUS',
+        address: 'Cnr. N1 Highway & Cemetery Road, Musina, 0900',
+        gpsLatitude: -22.3400,
+        gpsLongitude: 30.0400,
         status: 'Open',
         type: 'Mixed',
-        region: 'Ekurhuleni',
-        ward: 'Ward 45',
-        contactPhone: '011 999 9999',
-        contactEmail: 'ttn.cemetery@ekurhuleni.gov.za',
+        region: 'Musina',
+        ward: 'Ward 1',
+        contactPhone: '015 534 3001',
+        contactEmail: 'main.cemetery@musina.gov.za',
         openingHours: 'Monday-Sunday: 07:00-17:00',
       },
       {
-        name: 'Lala Ngoxolo Cemetery',
-        code: 'LAL',
-        address: 'Crystal Park, Benoni, 1501',
-        gpsLatitude: -26.1400,
-        gpsLongitude: 28.3800,
+        name: 'Musina West Cemetery',
+        code: 'MUS-W',
+        address: 'West End Road, Musina, 0900',
+        gpsLatitude: -22.3500,
+        gpsLongitude: 30.0300,
         status: 'Open',
         type: 'Mixed',
-        region: 'Ekurhuleni',
-        ward: 'Ward 24',
-        contactPhone: '011 999 8888',
-        contactEmail: 'lala.cemetery@ekurhuleni.gov.za',
+        region: 'Musina',
+        ward: 'Ward 2',
+        contactPhone: '015 534 3002',
+        contactEmail: 'west.cemetery@musina.gov.za',
         openingHours: 'Monday-Sunday: 07:00-17:00',
       },
       {
-        name: 'Mooifontein Cemetery',
-        code: 'MOO',
-        address: 'Mooifontein Rd, Norkem Park, Kempton Park, 1618',
-        gpsLatitude: -26.0800,
-        gpsLongitude: 28.2400,
+        name: 'Musina East Cemetery',
+        code: 'MUS-E',
+        address: 'East Side Road, Musina, 0900',
+        gpsLatitude: -22.3300,
+        gpsLongitude: 30.0500,
         status: 'Open',
         type: 'Mixed',
-        region: 'Ekurhuleni',
-        ward: 'Ward 12',
-        contactPhone: '011 999 7777',
-        contactEmail: 'mooifontein.cemetery@ekurhuleni.gov.za',
+        region: 'Musina',
+        ward: 'Ward 3',
+        contactPhone: '015 534 3003',
+        contactEmail: 'east.cemetery@musina.gov.za',
         openingHours: 'Monday-Sunday: 07:00-17:00',
       },
       {
-        name: 'Vlakfontein Cemetery',
-        code: 'VLK',
-        address: 'Vlakfontein Rd, Langaville, Tsakane, 1475',
-        gpsLatitude: -26.3500,
-        gpsLongitude: 28.3700,
+        name: 'Beitbridge Border Cemetery',
+        code: 'BEI',
+        address: 'N1 Highway, Beitbridge, 0900',
+        gpsLatitude: -22.2200,
+        gpsLongitude: 30.0000,
         status: 'Open',
         type: 'Mixed',
-        region: 'Ekurhuleni',
-        ward: 'Ward 80',
-        contactPhone: '011 999 6666',
-        contactEmail: 'vlakfontein.cemetery@ekurhuleni.gov.za',
+        region: 'Beitbridge',
+        ward: 'Ward 4',
+        contactPhone: '015 534 3004',
+        contactEmail: 'beitbridge.cemetery@musina.gov.za',
         openingHours: 'Monday-Sunday: 07:00-17:00',
       },
       {
-        name: 'Brakpan Cemetery',
-        code: 'BKP',
-        address: 'Cnr. Prince George & Wenden Avenue, Brakpan, 1541',
-        gpsLatitude: -26.2300,
-        gpsLongitude: 28.3600,
+        name: 'Tshipise Cemetery',
+        code: 'TSH',
+        address: 'Tshipise Road, Tshipise, 0900',
+        gpsLatitude: -22.6000,
+        gpsLongitude: 30.2000,
         status: 'Open',
         type: 'Mixed',
-        region: 'Ekurhuleni',
-        ward: 'Ward 97',
-        contactPhone: '011 999 5555',
-        contactEmail: 'brakpan.cemetery@ekurhuleni.gov.za',
+        region: 'Tshipise',
+        ward: 'Ward 5',
+        contactPhone: '015 534 3005',
+        contactEmail: 'tshipise.cemetery@musina.gov.za',
+        openingHours: 'Monday-Sunday: 07:00-17:00',
+      },
+      {
+        name: 'Musina North Cemetery',
+        code: 'MUS-N',
+        address: 'North Road Extension, Musina, 0900',
+        gpsLatitude: -22.3200,
+        gpsLongitude: 30.0300,
+        status: 'Open',
+        type: 'Mixed',
+        region: 'Musina',
+        ward: 'Ward 6',
+        contactPhone: '015 534 3006',
+        contactEmail: 'north.cemetery@musina.gov.za',
         openingHours: 'Monday-Sunday: 07:00-17:00',
       },
     ];
@@ -135,7 +151,7 @@ const seedEkurhuleni = async () => {
       { name: 'Muslim', code: 'MUS' },
       { name: 'General', code: 'GEN' },
       { name: 'Children', code: 'CHD' },
-      { name: 'Heroes Acre', code: 'HER' }, // Added Heroes Acre common in Ekurhuleni
+      { name: 'Pauper', code: 'PAU' },
     ];
 
     const sectionsData = [];
@@ -163,17 +179,17 @@ const seedEkurhuleni = async () => {
 
     for (const section of createdSections) {
       const cemetery = createdCemeteries.find(c => c._id.equals(section.cemeteryId));
-
+      
       for (let row = 0; row < 3; row++) {
         for (let plotNum = 1; plotNum <= 10; plotNum++) {
           const uniqueId = `${cemetery.code}-${section.code}-${rows[row]}-${plotNum}`;
           const graveTypes = ['Single', 'Double-Depth', 'Family'];
           const statuses = ['Available', 'Available', 'Available', 'Reserved', 'Occupied'];
-
+          
           const status = statuses[Math.floor(Math.random() * statuses.length)];
           const graveType = graveTypes[Math.floor(Math.random() * graveTypes.length)];
           const allowedBurials = graveType === 'Family' ? 4 : (graveType === 'Double-Depth' ? 2 : 1);
-
+          
           const plot = {
             sectionId: section._id,
             uniqueIdentifier: uniqueId,
@@ -207,36 +223,68 @@ const seedEkurhuleni = async () => {
     console.log('Creating crematoriums...');
     const crematoriumsData = [
       {
-        name: 'Boksburg Crematorium',
-        code: 'BOK-CREM',
-        cemeteryId: createdCemeteries.find(c => c.code === 'TTN')._id, // Associated near TTN
-        address: 'Barry Marais Rd, Vosloorus, Boksburg, 1475',
-        gpsLatitude: -26.2580,
-        gpsLongitude: 28.2320,
+        name: 'Musina Main Crematorium',
+        code: 'MUS-CREM',
+        cemeteryId: createdCemeteries.find(c => c.code === 'MUS')._id,
+        address: 'Musina Main Cemetery, N1 Highway, Musina, 0900',
+        gpsLatitude: -22.3400,
+        gpsLongitude: 30.0400,
         location: {
           type: 'Point',
-          coordinates: [28.2320, -26.2580],
-        },
-        capacity: 4,
-        status: 'Active',
-        operatingHours: 'Monday-Sunday: 08:00-16:00',
-        contactPhone: '011 999 4444',
-      },
-      {
-        name: 'Benoni Crematorium',
-        code: 'BEN-CREM',
-        cemeteryId: createdCemeteries.find(c => c.code === 'LAL')._id,
-        address: 'Crystal Park, Benoni, 1501',
-        gpsLatitude: -26.1400,
-        gpsLongitude: 28.3800,
-        location: {
-          type: 'Point',
-          coordinates: [28.3800, -26.1400],
+          coordinates: [30.0400, -22.3400],
         },
         capacity: 2,
         status: 'Active',
         operatingHours: 'Monday-Sunday: 08:00-16:00',
-        contactPhone: '011 999 3333',
+        contactPhone: '015 534 3101',
+      },
+      {
+        name: 'Musina West Crematorium',
+        code: 'MUS-W-CREM',
+        cemeteryId: createdCemeteries.find(c => c.code === 'MUS-W')._id,
+        address: 'Musina West Cemetery, West End Road, Musina, 0900',
+        gpsLatitude: -22.3500,
+        gpsLongitude: 30.0300,
+        location: {
+          type: 'Point',
+          coordinates: [30.0300, -22.3500],
+        },
+        capacity: 2,
+        status: 'Active',
+        operatingHours: 'Monday-Sunday: 08:00-16:00',
+        contactPhone: '015 534 3102',
+      },
+      {
+        name: 'Musina East Crematorium',
+        code: 'MUS-E-CREM',
+        cemeteryId: createdCemeteries.find(c => c.code === 'MUS-E')._id,
+        address: 'Musina East Cemetery, East Side Road, Musina, 0900',
+        gpsLatitude: -22.3300,
+        gpsLongitude: 30.0500,
+        location: {
+          type: 'Point',
+          coordinates: [30.0500, -22.3300],
+        },
+        capacity: 3,
+        status: 'Active',
+        operatingHours: 'Monday-Sunday: 08:00-16:00',
+        contactPhone: '015 534 3103',
+      },
+      {
+        name: 'Beitbridge Crematorium',
+        code: 'BEI-CREM',
+        cemeteryId: createdCemeteries.find(c => c.code === 'BEI')._id,
+        address: 'Beitbridge Border Cemetery, N1 Highway, Beitbridge, 0900',
+        gpsLatitude: -22.2200,
+        gpsLongitude: 30.0000,
+        location: {
+          type: 'Point',
+          coordinates: [30.0000, -22.2200],
+        },
+        capacity: 2,
+        status: 'Active',
+        operatingHours: 'Monday-Sunday: 08:00-16:00',
+        contactPhone: '015 534 3104',
       },
     ];
 
@@ -246,14 +294,14 @@ const seedEkurhuleni = async () => {
     // Create deceased records
     console.log('Creating deceased records...');
     const deceasedNames = [
-      { name: 'Vusi Mahlangu', id: '8501015801085' },
-      { name: 'Lerato Mokoena', id: '9202154802085' },
-      { name: 'Johan van der Merwe', id: '7503055803085' },
-      { name: 'Fatima Patel', id: '8804204804085' },
-      { name: 'Thabo Kekana', id: '8206105805085' },
-      { name: 'Busisiwe Nkosi', id: '9007254806085' },
-      { name: 'Andre Botha', id: '7808305807085' },
-      { name: 'Zodwa Khumalo', id: '9309124808085' },
+      { name: 'John Mthembu', id: '8501015801085' },
+      { name: 'Sarah Ndlovu', id: '9202154802085' },
+      { name: 'David Khumalo', id: '7503055803085' },
+      { name: 'Mary Zulu', id: '8804204804085' },
+      { name: 'Peter Dlamini', id: '8206105805085' },
+      { name: 'Grace Mkhize', id: '9007254806085' },
+      { name: 'Thomas Ngubane', id: '7808305807085' },
+      { name: 'Lindiwe Cele', id: '9309124808085' },
     ];
 
     const deceasedData = [];
@@ -306,8 +354,8 @@ const seedEkurhuleni = async () => {
       ownersData.push({
         name: `Owner ${i + 1} Surname`,
         idNumber: `8501015801${String(i).padStart(3, '0')}`,
-        contactAddress: `${i + 1} North Rand Rd, Boksburg, 1459`,
-        phone: `011 ${String(200 + i).padStart(3, '0')} ${String(1000 + i).padStart(4, '0')}`,
+        contactAddress: `${i + 1} Main Street, Musina, 0900`,
+        phone: `015 534 ${String(2000 + i).padStart(4, '0')}`,
         email: `owner${i + 1}@example.com`,
         ownershipType: ['Individual', 'Family'][Math.floor(Math.random() * 2)],
       });
@@ -339,16 +387,16 @@ const seedEkurhuleni = async () => {
     const tariffsData = [
       {
         serviceType: 'Grave Purchase',
-        serviceName: 'Single Grave Purchase (Resident)',
-        amount: 2500.00, // Slightly cheaper than eThekwini example
+        serviceName: 'Single Grave Purchase',
+        amount: 5000.00,
         customerCategory: 'Resident',
         effectiveDate: new Date(2024, 0, 1),
         isActive: true,
       },
       {
         serviceType: 'Grave Purchase',
-        serviceName: 'Family Grave Purchase (Resident)',
-        amount: 8000.00,
+        serviceName: 'Family Grave Purchase',
+        amount: 12000.00,
         customerCategory: 'Resident',
         effectiveDate: new Date(2024, 0, 1),
         isActive: true,
@@ -356,7 +404,7 @@ const seedEkurhuleni = async () => {
       {
         serviceType: 'Burial Fee',
         serviceName: 'Standard Burial Fee',
-        amount: 1800.00,
+        amount: 2500.00,
         customerCategory: 'Resident',
         effectiveDate: new Date(2024, 0, 1),
         isActive: true,
@@ -364,7 +412,7 @@ const seedEkurhuleni = async () => {
       {
         serviceType: 'Cremation Fee',
         serviceName: 'Cremation Service',
-        amount: 1500.00,
+        amount: 3500.00,
         customerCategory: 'Resident',
         effectiveDate: new Date(2024, 0, 1),
         isActive: true,
@@ -372,7 +420,7 @@ const seedEkurhuleni = async () => {
       {
         serviceType: 'Exhumation',
         serviceName: 'Exhumation Permit',
-        amount: 4000.00,
+        amount: 5000.00,
         customerCategory: 'Resident',
         effectiveDate: new Date(2024, 0, 1),
         isActive: true,
@@ -380,7 +428,7 @@ const seedEkurhuleni = async () => {
       {
         serviceType: 'Memorial Permit',
         serviceName: 'Headstone Permit',
-        amount: 450.00,
+        amount: 500.00,
         customerCategory: 'Resident',
         effectiveDate: new Date(2024, 0, 1),
         isActive: true,
@@ -412,7 +460,7 @@ const seedEkurhuleni = async () => {
         serviceDuration: 60,
         bufferMinutes: 30,
         status: ['Pending', 'Confirmed'][Math.floor(Math.random() * 2)],
-        confirmationNumber: `BK-EKU-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        confirmationNumber: `BK-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
       });
     }
 
@@ -431,7 +479,7 @@ const seedEkurhuleni = async () => {
     console.log(`  Ownerships: ${ownershipsData.length}`);
     console.log(`  Tariffs: ${tariffsData.length}`);
     console.log(`  Bookings: ${bookingsData.length}`);
-    console.log('\n✅ Ekurhuleni Municipality demo data seeded successfully!\n');
+    console.log('\n✅ Musina Municipality demo data seeded successfully!\n');
 
     await mongoose.connection.close();
     process.exit(0);
@@ -441,4 +489,5 @@ const seedEkurhuleni = async () => {
   }
 };
 
-seedEkurhuleni();
+seedMusina();
+
