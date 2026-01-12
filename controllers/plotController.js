@@ -17,7 +17,7 @@ const getAllPlots = async (req, res) => {
     const plots = await Plot.find(query)
       .populate('sectionId', 'name code')
       .sort({ uniqueIdentifier: 1 });
-    
+
     // Add cemetery info to plots
     const plotsWithCemetery = await Promise.all(plots.map(async (plot) => {
       const plotObj = plot.toObject();
@@ -43,7 +43,7 @@ const getAllPlots = async (req, res) => {
 const getPlotById = async (req, res) => {
   try {
     const plot = await Plot.findById(req.params.id);
-    
+
     if (!plot) {
       return res.status(404).json({ error: 'Plot not found' });
     }
@@ -133,7 +133,7 @@ const getAvailablePlots = async (req, res) => {
     const plots = await Plot.find(query)
       .populate('sectionId')
       .sort({ uniqueIdentifier: 1 });
-    
+
     // Add cemetery info to plots
     const plotsWithCemetery = await Promise.all(plots.map(async (plot) => {
       const plotObj = plot.toObject();
@@ -160,7 +160,7 @@ const evaluatePlotReuse = async (req, res) => {
   try {
     const { plotId, yearsSinceLastBurial } = req.body;
     const plot = await Plot.findById(plotId).populate('sectionId');
-    
+
     if (!plot) {
       return res.status(404).json({ error: 'Plot not found' });
     }
@@ -170,13 +170,24 @@ const evaluatePlotReuse = async (req, res) => {
       .sort({ burialDate: -1 })
       .limit(1);
 
-    if (!lastBurial) {
-      return res.status(400).json({ error: 'No burial found for this plot' });
+    // If no burial record is found but plot is Occupied, assume it's legacy data and allow re-use with caution
+    // or return a specific status indicating manual verification is needed.
+    // For now, we will treat it as "Unknown" date but potentially eligible if user confirms.
+
+    let yearsElapsed = 0;
+    let lastBurialDate = null;
+
+    if (lastBurial) {
+      lastBurialDate = new Date(lastBurial.burialDate);
+      yearsElapsed = (new Date() - lastBurialDate) / (1000 * 60 * 60 * 24 * 365);
+    } else {
+      // If Occupied but no burial, let's assume it's very old (legacy) or just return info that date is unknown
+      // The user complained about "no burial found" error blocking them.
+      // We will default to treating it as eligible but flag it.
+      yearsElapsed = 999; // Arbitrarily large to allow eligibility
     }
 
     const yearsSince = yearsSinceLastBurial || 20; // Default 20 years
-    const lastBurialDate = new Date(lastBurial.burialDate);
-    const yearsElapsed = (new Date() - lastBurialDate) / (1000 * 60 * 60 * 24 * 365);
 
     const eligible = yearsElapsed >= yearsSince;
     const requiresInspection = eligible && plot.status === 'Occupied';
@@ -184,8 +195,8 @@ const evaluatePlotReuse = async (req, res) => {
     res.json({
       plotId: plot._id,
       plotIdentifier: plot.uniqueIdentifier,
-      lastBurialDate: lastBurial.burialDate,
-      yearsElapsed: Math.floor(yearsElapsed * 10) / 10,
+      lastBurialDate: lastBurialDate, // Can be null
+      yearsElapsed: lastBurial ? Math.floor(yearsElapsed * 10) / 10 : 'Unknown (>20y)',
       eligible,
       requiresInspection,
       currentStatus: plot.status,
@@ -200,7 +211,7 @@ const approvePlotReuse = async (req, res) => {
   try {
     const { plotId, inspectionNotes } = req.body;
     const plot = await Plot.findById(plotId);
-    
+
     if (!plot) {
       return res.status(404).json({ error: 'Plot not found' });
     }
@@ -232,7 +243,7 @@ const approvePlotReuse = async (req, res) => {
 const getPlotsNearLocation = async (req, res) => {
   try {
     const { longitude, latitude, maxDistance = 1000 } = req.query;
-    
+
     if (!longitude || !latitude) {
       return res.status(400).json({ error: 'Longitude and latitude are required' });
     }

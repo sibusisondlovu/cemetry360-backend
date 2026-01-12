@@ -102,9 +102,9 @@ const createBooking = async (req, res) => {
       if (conflictingBookings.length > 0) {
         return res.status(400).json({ error: 'Time slot already booked' });
       }
-    } else {
-      return res.status(400).json({ error: 'Either plotId or crematoriumId is required' });
     }
+    // Removed strict check: else { return res.status(400).json({ error: 'Either plotId or crematoriumId is required' }); }
+    // Allowing bookings without plot/crematorium (e.g. initial inquiry or service only)
 
     const confirmationNumber = `BK-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     const booking = await Booking.create({
@@ -141,7 +141,7 @@ const confirmBooking = async (req, res) => {
       { status: 'Confirmed' },
       { new: true }
     ).populate('plotId');
-    
+
     if (!booking) {
       return res.status(404).json({ error: 'Booking not found' });
     }
