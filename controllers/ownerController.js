@@ -5,7 +5,8 @@ const getAllOwners = async (req, res) => {
     const owners = await Owner.find()
       .populate({
         path: 'ownerships',
-        populate: { path: 'plotId', model: 'Plot' }
+        populate: { path: 'plotId', model: 'Plot' },
+        strictPopulate: false
       })
       .sort({ name: 1 });
 
